@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Futuristic Dev Portfolio — Template</title>
+  <meta name="description" content="Luxurious dark 3D developer portfolio template (single file)." />
+  <style>
+    :root{
+      --bg:#05030a;
+      --panel: rgba(255,255,255,0.03);
+      --accent:#ffd166; /* warm gold */
+      --neon:#7ef9ff;
+      --muted:#adb2c0;
+      --glass: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      --card: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.06));
+      --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    }
+    html,body{height:100%;}
+    body{
+      margin:0;
+      padding:0;
+      background:var(--bg);
+      color:#e6eef8;
+      font-family:var(--font-sans);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      overflow-x:hidden;
+    }
+    /* full-screen 3D canvas background */
+    #bg{
+      position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block;
+    }
+
+    /* page container */
+    .wrap{position:relative;z-index:2;max-width:1200px;margin:0 auto;padding:48px 24px;}
+
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:36px}
+    .brand{display:flex;gap:16px;align-items:center}
+    .logo{width:52px;height:52px;border-radius:12px;background:linear-gradient(135deg,var(--accent),#ff9f1c);display:flex;align-items:center;justify-content:center;color:#111;font-weight:700;font-size:18px;box-shadow:0 6px 24px rgba(0,0,0,0.6),0 0 18px rgba(255,209,130,0.06) inset}
+    h1.site-title{font-size:14px;letter-spacing:1px;margin:0;color:var(--muted)}
+    .nav{display:flex;gap:18px;align-items:center}
+    .nav a{color:var(--muted);text-decoration:none;font-size:14px;padding:8px 12px;border-radius:8px}
+    .nav a.primary{color:var(--bg);background:var(--accent);box-shadow:0 6px 18px rgba(0,0,0,0.6)}
+
+    /* hero */
+    .hero{display:grid;grid-template-columns:1fr 420px;gap:28px;align-items:center;margin-bottom:48px}
+    .hero-left{max-width:680px}
+    .eyebrow{color:var(--neon);font-weight:600;letter-spacing:1px;margin-bottom:12px}
+    h2{font-size:36px;margin:0 0 12px 0;line-height:1.02}
+    p.lead{color:var(--muted);margin:0 0 20px}
+    .cta{display:flex;gap:12px}
+    .btn{padding:12px 18px;border-radius:12px;background:var(--panel);border:1px solid rgba(255,255,255,0.03);color:inherit;text-decoration:none}
+    .btn.accent{background:linear-gradient(90deg,var(--accent),#ff9f1c);color:#111;font-weight:700}
+
+    /* right panel shows floating card preview */
+    .preview{height:360px;background:var(--card);border-radius:16px;padding:18px;backdrop-filter:blur(6px);box-shadow:0 8px 40px rgba(2,6,23,0.6);display:flex;flex-direction:column}
+    .device{flex:1;border-radius:12px;background:linear-gradient(180deg,rgba(255,255,255,0.02),transparent);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.85);font-size:80px;font-weight:900}
+    .meta{display:flex;justify-content:space-between;padding-top:12px;color:var(--muted);font-size:13px}
+
+    /* projects grid */
+    .projects{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;margin-bottom:48px}
+    .card{background:var(--panel);border-radius:14px;padding:18px;border:1px solid rgba(255,255,255,0.03);box-shadow:0 8px 30px rgba(2,6,23,0.6)}
+    .thumb{height:160px;border-radius:10px;background:linear-gradient(135deg,#0f0f18,rgba(255,255,255,0.02));display:flex;align-items:center;justify-content:center;font-size:64px;font-weight:900;color:rgba(255,255,255,0.12);position:relative;overflow:hidden}
+    .proj-title{margin-top:12px;font-weight:700}
+    .proj-desc{color:var(--muted);font-size:13px}
+
+    /* about/contact */
+    .split{display:grid;grid-template-columns:1fr 360px;gap:20px;align-items:start}
+    .panel{background:var(--panel);padding:18px;border-radius:12px;border:1px solid rgba(255,255,255,0.03)}
+    .contact input,.contact textarea{width:100%;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit}
+    .contact label{display:block;color:var(--muted);font-size:13px;margin-bottom:6px}
+
+    footer{margin-top:48px;color:var(--muted);font-size:13px;text-align:center}
+
+    /* responsive */
+    @media (max-width:920px){
+      .hero{grid-template-columns:1fr}
+      .split{grid-template-columns:1fr}
+    }
+
+    /* subtle neon outlines */
+    .neon{position:relative}
+    .neon:after{content:'';position:absolute;inset:0;border-radius:inherit;box-shadow:0 0 36px rgba(126,249,255,0.06) inset}
+  </style>
+</head>
+<body>
+  <canvas id="bg"></canvas>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo">FD</div>
+        <div>
+          <div class="site-title">Freelance Developer</div>
+          <div style="font-weight:700">Your Name — Fullstack</div>
+        </div>
+      </div>
+      <nav class="nav">
+        <a href="#projects">Projects</a>
+        <a href="#about">About</a>
+        <a href="#contact" class="primary">Contact</a>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="hero-left">
+          <div class="eyebrow">Design • Code • Ship</div>
+          <h2>Luxurious, futuristic interfaces for modern web apps</h2>
+          <p class="lead">I build fast, accessible, and visually striking developer experiences — product-focused frontends, reliable APIs, and delightful interactions.</p>
+          <div class="cta">
+            <a class="btn accent" href="#contact">Hire me</a>
+            <a class="btn" href="#projects">View work</a>
+          </div>
+        </div>
+        <aside class="preview neon">
+          <div class="device" id="devicePreview">3D</div>
+          <div class="meta"><span>Next-gen UI</span><span>2026</span></div>
+        </aside>
+      </section>
+
+      <section id="projects">
+        <h3 style="margin-bottom:14px">Selected Projects</h3>
+        <div class="projects">
+          <div class="card">
+            <div class="thumb">01</div>
+            <div class="proj-title">Project Title One</div>
+            <div class="proj-desc">A concise one-line summary of the project's purpose and tech.</div>
+          </div>
+          <div class="card">
+            <div class="thumb">02</div>
+            <div class="proj-title">Project Title Two</div>
+            <div class="proj-desc">Server-driven UI with realtime updates and polished animations.</div>
+          </div>
+          <div class="card">
+            <div class="thumb">03</div>
+            <div class="proj-title">Project Title Three</div>
+            <div class="proj-desc">Tooling, infra, and frontend work that scaled to thousands of users.</div>
+          </div>
+          <div class="card">
+            <div class="thumb">04</div>
+            <div class="proj-title">Project Title Four</div>
+            <div class="proj-desc">Design system and component library for consistent UX.</div>
+          </div>
+        </div>
+      </section>
+
+      <section id="about" style="margin-top:28px">
+        <div class="split">
+          <div>
+            <div class="panel">
+              <h4 style="margin-top:0">About me</h4>
+              <p class="proj-desc">I'm a freelance developer focused on building elegant, performant web applications. I enjoy combining good design with solid engineering to ship measurable product outcomes.</p>
+              <ul style="color:var(--muted)">
+                <li>Specialties: React, Node, TypeScript, Design Systems</li>
+                <li>Available for: freelance, contract, advisory</li>
+              </ul>
+            </div>
+          </div>
+          <div>
+            <div class="panel contact">
+              <h4 style="margin-top:0">Contact</h4>
+              <form onsubmit="event.preventDefault();alert('Replace with your contact handler or mailto.');">
+                <label>Name</label>
+                <input placeholder="Your name" required />
+                <label>Email</label>
+                <input placeholder="you@domain.com" required />
+                <label>Message</label>
+                <textarea rows="4" placeholder="Brief project description"></textarea>
+                <div style="margin-top:12px;display:flex;gap:8px">
+                  <button class="btn" type="submit">Send</button>
+                  <a class="btn" href="mailto:you@example.com">Email</a>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <footer>
+        Built with care • Replace placeholders with real screenshots or links.
+      </footer>
+    </main>
+  </div>
+
+  <!-- Three.js from CDN for the animated background (single-file HTML template uses CDN) -->
+  <script src="https://unpkg.com/three@0.158.0/build/three.min.js"></script>
+  <script>
+    // Minimal 3D animated background using three.js
+    (function(){
+      const canvas = document.getElementById('bg');
+      const renderer = new THREE.WebGLRenderer({canvas:canvas,antialias:true,alpha:true});
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+      const scene = new THREE.Scene();
+      const camera = new THREE.PerspectiveCamera(40,window.innerWidth/window.innerHeight,0.1,1000);
+      camera.position.set(0,0,60);
+
+      // lights
+      const light = new THREE.DirectionalLight(0xffffff,0.8);
+      light.position.set(5,10,7);
+      scene.add(light);
+      scene.add(new THREE.AmbientLight(0x404050,0.8));
+
+      // floating shapes group
+      const group = new THREE.Group();
+      scene.add(group);
+
+      // materials
+      const mat = new THREE.MeshStandardMaterial({color:0xffd166,metalness:0.6,roughness:0.2,emissive:0x0f1b2f,emissiveIntensity:0.12});
+      const mat2 = new THREE.MeshStandardMaterial({color:0x7ef9ff,metalness:0.2,roughness:0.4,emissive:0x072430,emissiveIntensity:0.08});
+
+      // create several meshes
+      const geo1 = new THREE.TorusGeometry(8,1.6,60,120);
+      const mesh1 = new THREE.Mesh(geo1,mat);
+      mesh1.rotation.x = 0.6; mesh1.position.set(-16,6,0);
+      group.add(mesh1);
+
+      const geo2 = new THREE.IcosahedronGeometry(6,1);
+      const mesh2 = new THREE.Mesh(geo2,mat2);
+      mesh2.position.set(18,-6,-4);
+      group.add(mesh2);
+
+      // subtle particle field
+      const particles = new THREE.BufferGeometry();
+      const count = 600;
+      const positions = new Float32Array(count*3);
+      for(let i=0;i<count;i++){
+        positions[i*3+0] = (Math.random()-0.5)*300;
+        positions[i*3+1] = (Math.random()-0.5)*120;
+        positions[i*3+2] = (Math.random()-0.5)*200;
+      }
+      particles.setAttribute('position', new THREE.BufferAttribute(positions,3));
+      const pmat = new THREE.PointsMaterial({color:0x7ef9ff,size:1.2,transparent:true,opacity:0.12});
+      const pts = new THREE.Points(particles,pmat);
+      scene.add(pts);
+
+      // resize
+      function onResize(){
+        const w = window.innerWidth, h = window.innerHeight;
+        renderer.setSize(w,h);
+        camera.aspect = w/h; camera.updateProjectionMatrix();
+      }
+      window.addEventListener('resize', onResize, {passive:true});
+      onResize();
+
+      // animate
+      let t = 0;
+      function animate(){
+        t += 0.006;
+        group.rotation.y = Math.sin(t*0.4)*0.6;
+        group.rotation.x = Math.cos(t*0.15)*0.12;
+        mesh1.rotation.z += 0.003 + 0.002*Math.cos(t);
+        mesh2.rotation.x += 0.002;
+        pts.rotation.y += 0.0008;
+        // gentle camera float
+        camera.position.x = Math.sin(t*0.4)*6;
+        camera.position.y = Math.sin(t*0.2)*2;
+        camera.lookAt(0,0,0);
+        renderer.render(scene,camera);
+        requestAnimationFrame(animate);
+      }
+      animate();
+
+      // small preview: mirror group into devicePreview via CSS transform
+      // (simple animated text placeholder for the device preview)
+      const device = document.getElementById('devicePreview');
+      let dt = 0;
+      function previewPulse(){
+        dt += 0.03;
+        const s = 1 + Math.sin(dt)*0.02;
+        device.style.transform = `scale(${s}) rotateX(${Math.sin(dt)*2}deg) rotateY(${Math.cos(dt)*2}deg)`;
+        requestAnimationFrame(previewPulse);
+      }
+      previewPulse();
+    })();
+  </script>
+</body>
+</html>
